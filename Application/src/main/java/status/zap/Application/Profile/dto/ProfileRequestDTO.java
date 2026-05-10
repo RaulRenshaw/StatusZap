@@ -1,13 +1,14 @@
-package status.zap.Application.Profile.dto;
+package status.zap.Application.profile.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
-/**
- * Body de PUT /profile — todos os opcionais podem ser nulos.
- */
 public record ProfileRequestDTO(
         @NotBlank String name,
-        @NotBlank String slug,
+        @NotBlank
+        @Pattern(regexp = "^[a-z0-9-]{3,40}$",
+                 message = "Slug deve ter 3-40 caracteres: letras minúsculas, números e hífens")
+        String slug,
         String phone,
         String address,
         String logoUrl,

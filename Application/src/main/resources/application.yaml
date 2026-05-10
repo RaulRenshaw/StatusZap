@@ -12,11 +12,16 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
-    show-sql: ${SHOW_SQL:true}
+    show-sql: ${SHOW_SQL:false}
     open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
 
   jackson:
     default-property-inclusion: non_null
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
     deserialization:
       FAIL_ON_UNKNOWN_PROPERTIES: false
 
@@ -34,3 +39,8 @@ cors:
   allowed-origins:
     - ${FRONT_URL:http://localhost:5173}
     - ${API_URL:http://localhost:8080}
+
+storage:
+  local:
+    base-dir: ${STORAGE_DIR:uploads}
+    base-url: ${STORAGE_URL:http://localhost:8080/uploads}

@@ -1,8 +1,5 @@
-package status.zap.Application.Profile.dto;
+package status.zap.Application.profile.dto;
 
-/**
- * Shape de ShopProfile retornado pelo contrato.
- */
 public record ProfileResponseDTO(
         String name,
         String slug,

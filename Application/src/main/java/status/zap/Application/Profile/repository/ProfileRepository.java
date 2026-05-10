@@ -1,8 +1,8 @@
-package status.zap.Application.Profile.repository;
+package status.zap.Application.profile.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import status.zap.Application.Profile.model.ProfileEntity;
+import status.zap.Application.profile.model.ProfileEntity;
 
 import java.util.Optional;
 import java.util.UUID;

@@ -1,64 +1,53 @@
-package status.zap.Application.Profile.controller;
+package status.zap.Application.profile.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import status.zap.Application.Auth.dto.AuthenticatedUser;
-import status.zap.Application.Auth.model.UsersEntity;
-import status.zap.Application.Auth.repository.UsersRepository;
-import status.zap.Application.Profile.dto.ProfileRequestDTO;
-import status.zap.Application.Profile.dto.ProfileResponseDTO;
-import status.zap.Application.Profile.service.ProfileService;
-import status.zap.Application.commons.exception.ResourceNotFoundException;
+import status.zap.Application.auth.dto.AuthenticatedUser;
+import status.zap.Application.profile.dto.ProfileRequestDTO;
+import status.zap.Application.profile.dto.ProfileResponseDTO;
+import status.zap.Application.profile.service.ProfileService;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/profile")
+@RequiredArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
-    private final UsersRepository usersRepository;
 
-    public ProfileController(ProfileService profileService,
-                             UsersRepository usersRepository) {
-        this.profileService = profileService;
-        this.usersRepository = usersRepository;
-    }
-
-    /** GET /profile — perfil do usuário autenticado */
-    @GetMapping()
+    /** GET /api/profile */
+    @GetMapping
     public ResponseEntity<ProfileResponseDTO> getProfile(
-            @AuthenticationPrincipal AuthenticatedUser userDetails) {
-        return ResponseEntity.ok(profileService.getProfile(userDetails.id()));
+            @AuthenticationPrincipal AuthenticatedUser user) {
+        return ResponseEntity.ok(profileService.getProfile(user.id()));
     }
 
-    /** PUT /profile — cria ou atualiza perfil */
-    @PutMapping()
+    /** PUT /api/profile */
+    @PutMapping
     public ResponseEntity<ProfileResponseDTO> saveProfile(
-            @AuthenticationPrincipal AuthenticatedUser userDetails,
+            @AuthenticationPrincipal AuthenticatedUser user,
             @Valid @RequestBody ProfileRequestDTO dto) {
-        return ResponseEntity.ok(profileService.saveProfile(userDetails.id(), dto));
+        return ResponseEntity.ok(profileService.saveProfile(user.id(), dto));
     }
 
-    /** POST /profile/logo — upload multipart da logo */
-    @PostMapping("/profile/logo")
+    /** POST /api/profile/logo */
+    @PostMapping("/logo")
     public ResponseEntity<Map<String, String>> uploadLogo(
-            @AuthenticationPrincipal AuthenticatedUser userDetails,
+            @AuthenticationPrincipal AuthenticatedUser user,
             @RequestParam("file") MultipartFile file) {
-        String logoUrl = profileService.uploadLogo(userDetails.id(), file);
+        String logoUrl = profileService.uploadLogo(user.id(), file);
         return ResponseEntity.ok(Map.of("logoUrl", logoUrl));
     }
 
-    /** GET /public/profile/:slug — acesso público, sem auth */
+    /** GET /api/public/profile/:slug — sem auth */
     @GetMapping("/public/{slug}")
-    public ResponseEntity<ProfileResponseDTO> getPublicProfile(@PathVariable String slug) {
+    public ResponseEntity<ProfileResponseDTO> getPublicProfile(
+            @PathVariable String slug) {
         return ResponseEntity.ok(profileService.getPublicProfile(slug));
     }
-
-    // -------------------------------------------------------------------------
-
 }

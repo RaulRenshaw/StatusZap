@@ -1,0 +1,21 @@
+# Build
+target/
+*.class
+*.jar
+*.war
+
+# Env — NUNCA commitar
+.env
+*.env.local
+
+# Uploads locais
+uploads/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar

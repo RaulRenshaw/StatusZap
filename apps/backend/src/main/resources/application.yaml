@@ -95,7 +95,7 @@ spring:
       on-profile: prod
   jpa:
     hibernate:
-      ddl-auto: ${DDL_AUTO:validate}
+      ddl-auto: ${DDL_AUTO:update}
     show-sql: false
 
 server:

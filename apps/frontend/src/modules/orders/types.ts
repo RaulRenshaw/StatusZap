@@ -44,6 +44,7 @@ export interface Service {
   customerName: string;
   customerPhone: string;
   device: string;
+  problem?: string;
   observations?: string; // unified field — backend uses observations only
   status: ServiceStatus;
   createdAt: string;

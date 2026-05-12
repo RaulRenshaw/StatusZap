@@ -45,6 +45,7 @@ function mapIn(raw: any): Service {
     customerName: raw.customerName,
     customerPhone: raw.customerPhone,
     device: raw.device,
+    problem: raw.problem ?? raw.observations,
     observations: raw.observations,
     status: raw.status,
     createdAt: raw.createdAt,

@@ -51,7 +51,7 @@ export default function ServiceDetail() {
   const navigate = useNavigate();
 
   const { service, loading, refresh } = useService(id);
-  const profile = useProfile();
+  const { profile } = useProfile();
 
   const [showAllStatuses, setShowAllStatuses] = useState(false);
   const [qrOpen, setQrOpen] = useState(false);

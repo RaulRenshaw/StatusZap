@@ -30,7 +30,7 @@ export default function Dashboard() {
         s.customerName.toLowerCase().includes(q) ||
         s.device.toLowerCase().includes(q) ||
         s.customerPhone.includes(q) ||
-        s.problem.toLowerCase().includes(q)
+        (s.problem ?? s.observations ?? "").toLowerCase().includes(q)
       );
     });
   }, [services, query, filter]);
@@ -142,7 +142,7 @@ export default function Dashboard() {
                 <StatusBadge status={s.status} size="sm" />
               </div>
 
-              <p className="mt-3 line-clamp-2 text-sm text-foreground/80">{s.problem}</p>
+              <p className="mt-3 line-clamp-2 text-sm text-foreground/80">{s.problem ?? s.observations}</p>
 
               <div className="mt-4 flex items-center justify-between border-t border-border pt-3">
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

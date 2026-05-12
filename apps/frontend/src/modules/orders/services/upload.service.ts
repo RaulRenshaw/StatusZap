@@ -1,11 +1,13 @@
-/**
- * upload.service.ts — stub para upload de arquivos
- *
- * TODO: substituir por chamada real a POST /profile/logo (multipart/form-data)
- */
-
-import { store } from "@/lib/store";
+import { request } from "@/shared/services/http";
 
 export const uploadService = {
-  uploadLogo: (file: File): Promise<string> => store.uploadLogo(file),
+  async uploadLogo(file: File): Promise<string> {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await request<{ logoUrl: string }>("/profile/logo", {
+      method: "POST",
+      body: form,
+    });
+    return res.logoUrl;
+  },
 };

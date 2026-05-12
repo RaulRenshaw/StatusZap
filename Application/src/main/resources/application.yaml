@@ -11,7 +11,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: ${DDL_AUTO:update}
+      ddl-auto: ${DDL_AUTO:create}
     show-sql: ${SHOW_SQL:false}
     open-in-view: false
     properties:
@@ -20,8 +20,6 @@ spring:
 
   jackson:
     default-property-inclusion: non_null
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
     deserialization:
       FAIL_ON_UNKNOWN_PROPERTIES: false
 
@@ -37,10 +35,24 @@ jwt:
 
 cors:
   allowed-origins:
-    - ${FRONT_URL:http://localhost:5173}
+    - ${FRONT_URL:http://localhost:4200}
     - ${API_URL:http://localhost:8080}
 
 storage:
   local:
     base-dir: ${STORAGE_DIR:uploads}
     base-url: ${STORAGE_URL:http://localhost:8080/uploads}
+
+mercado-pago:
+  enabled: ${MP_ENABLED:false}
+  sandbox: ${MP_SANDBOX:true}
+  access-token: ${MP_ACCESS_TOKEN:}
+  public-key: ${MP_PUBLIC_KEY:}
+  webhook-secret: ${MP_WEBHOOK_SECRET:}
+  base-url: ${MP_BASE_URL:https://api.mercadopago.com}
+  plan-code: ${MP_PLAN_CODE:premium_monthly}
+  plan-reason: ${MP_PLAN_REASON:Assinatura Premium Mensal}
+  amount: ${MP_AMOUNT:29.00}
+  currency: ${MP_CURRENCY:BRL}
+  back-url: ${MP_BACK_URL:http://localhost:5173/billing/mercado-pago}
+  notification-url: ${MP_NOTIFICATION_URL:}

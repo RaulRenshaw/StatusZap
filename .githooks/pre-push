@@ -9,5 +9,5 @@ npm --prefix apps/frontend test
 
 (
   cd apps/backend
-  ./mvnw -B test
+  mvn -B test
 )

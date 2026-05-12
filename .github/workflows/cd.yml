@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Trigger frontend staging deploy
         if: env.DEPLOY_HOOK_URL != ''
         env:
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Trigger frontend production deploy
         if: env.DEPLOY_HOOK_URL != ''
         env:

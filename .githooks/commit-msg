@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+set -eu
+
+message_file="$1"
+subject="$(sed -n '1p' "$message_file")"
+
+pattern='^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-z0-9._-]+\))?!?: .{1,100}$'
+
+if printf '%s' "$subject" | grep -Eq "$pattern"; then
+  exit 0
+fi
+
+cat <<'MSG'
+Invalid commit message.
+
+Use Conventional Commits:
+  feat: add checkout flow
+  fix(api): handle expired token
+  ci: add release workflow
+MSG
+exit 1

@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design System — RastreioFix
+   Inspirado em WhatsApp: claro, amigável, alta confiança.
+   Todas as cores em HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 150 20% 98%;
+    --foreground: 160 25% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 160 25% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 25% 12%;
+
+    /* WhatsApp green */
+    --primary: 142 70% 38%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 142 76% 48%;
+
+    --secondary: 150 25% 94%;
+    --secondary-foreground: 160 25% 18%;
+
+    --muted: 150 15% 95%;
+    --muted-foreground: 160 10% 42%;
+
+    --accent: 142 60% 95%;
+    --accent-foreground: 142 70% 28%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 95% 55%;
+    --warning-foreground: 30 80% 15%;
+
+    --info: 210 90% 55%;
+    --info-foreground: 0 0% 100%;
+
+    --success: 142 70% 38%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 150 15% 90%;
+    --input: 150 15% 90%;
+    --ring: 142 70% 38%;
+
+    --radius: 0.875rem;
+
+    /* Status tokens (timeline) */
+    --status-recebido: 210 90% 55%;
+    --status-analise: 270 70% 60%;
+    --status-conserto: 38 95% 55%;
+    --status-pronto: 142 70% 38%;
+    --status-entregue: 160 15% 45%;
+
+    /* Gradients & shadows */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+    --gradient-soft: linear-gradient(180deg, hsl(150 30% 97%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(142 70% 38%) 0%, hsl(160 75% 35%) 100%);
+
+    --shadow-sm: 0 1px 2px 0 hsl(160 25% 12% / 0.04);
+    --shadow-md: 0 4px 12px -2px hsl(160 25% 12% / 0.08);
+    --shadow-lg: 0 12px 32px -8px hsl(160 25% 12% / 0.12);
+    --shadow-glow: 0 8px 28px -6px hsl(var(--primary) / 0.35);
+
+    --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 160 25% 18%;
+    --sidebar-primary: 142 70% 38%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 150 25% 95%;
+    --sidebar-accent-foreground: 160 25% 18%;
+    --sidebar-border: 150 15% 90%;
+    --sidebar-ring: 142 70% 38%;
+  }
+
+  .dark {
+    --background: 160 25% 8%;
+    --foreground: 150 15% 95%;
+    --card: 160 25% 11%;
+    --card-foreground: 150 15% 95%;
+    --popover: 160 25% 11%;
+    --popover-foreground: 150 15% 95%;
+    --primary: 142 70% 45%;
+    --primary-foreground: 160 25% 8%;
+    --secondary: 160 20% 16%;
+    --secondary-foreground: 150 15% 95%;
+    --muted: 160 20% 16%;
+    --muted-foreground: 150 10% 65%;
+    --accent: 160 20% 16%;
+    --accent-foreground: 150 15% 95%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 150 15% 95%;
+    --border: 160 20% 18%;
+    --input: 160 20% 18%;
+    --ring: 142 70% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  h1, h2, h3, h4 {
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .bg-gradient-hero {
+    background: var(--gradient-hero);
+  }
+  .bg-gradient-soft {
+    background: var(--gradient-soft);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .shadow-soft {
+    box-shadow: var(--shadow-md);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-lg);
+  }
+  .transition-base {
+    transition: var(--transition-base);
+  }
+}

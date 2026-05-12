@@ -1,0 +1,27 @@
+name: Release Candidate
+
+on:
+  push:
+    branches:
+      - "release/**"
+
+permissions:
+  contents: write
+
+jobs:
+  create-rc:
+    name: Create release candidate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF_NAME#release/}"
+          tag="v${version}-rc.${GITHUB_RUN_NUMBER}"
+          gh release create "$tag" \
+            --target "$GITHUB_SHA" \
+            --title "StatusZap ${tag}" \
+            --notes "Release candidate generated from ${GITHUB_REF_NAME}." \
+            --prerelease

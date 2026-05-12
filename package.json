@@ -1,0 +1,17 @@
+{
+  "name": "statuszap",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "prepare": "git config core.hooksPath .githooks",
+    "frontend:dev": "npm --prefix apps/frontend run dev",
+    "frontend:lint": "npm --prefix apps/frontend run lint",
+    "frontend:typecheck": "npm --prefix apps/frontend run typecheck",
+    "frontend:test": "npm --prefix apps/frontend test",
+    "frontend:build": "npm --prefix apps/frontend run build",
+    "backend:test": "cd apps/backend && mvn -B test",
+    "backend:build": "cd apps/backend && mvn -B package",
+    "compose:dev": "docker compose up --build",
+    "compose:prod": "docker compose -f docker-compose.prod.yml up --build -d"
+  }
+}

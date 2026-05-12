@@ -25,7 +25,8 @@ services:
     container_name: statuszap-api
     restart: unless-stopped
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-statuszap}
       DB_USER: ${POSTGRES_USER:-statuszap}

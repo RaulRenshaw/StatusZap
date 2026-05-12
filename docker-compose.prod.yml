@@ -5,7 +5,8 @@ services:
       context: ./apps/backend
     restart: unless-stopped
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       SPRING_PROFILES_ACTIVE: prod
       DDL_AUTO: ${DDL_AUTO:-validate}

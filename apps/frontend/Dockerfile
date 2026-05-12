@@ -1,5 +1,9 @@
 FROM node:22-alpine AS build
 WORKDIR /app
+ARG VITE_API_URL
+ARG VITE_APP_URL
+ENV VITE_API_URL=${VITE_API_URL}
+ENV VITE_APP_URL=${VITE_APP_URL}
 COPY package*.json ./
 RUN npm ci
 COPY . .

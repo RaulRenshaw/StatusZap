@@ -1,0 +1,43 @@
+services:
+  backend:
+    image: ${BACKEND_IMAGE:-statuszap-api:latest}
+    build:
+      context: ./apps/backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DDL_AUTO: ${DDL_AUTO:-validate}
+      STORAGE_DIR: /app/uploads
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    volumes:
+      - statuszap_uploads:/app/uploads
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health/readiness"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - statuszap
+
+  frontend:
+    image: ${FRONTEND_IMAGE:-statuszap-web:latest}
+    build:
+      context: ./apps/frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - statuszap
+
+networks:
+  statuszap:
+    driver: bridge
+
+volumes:
+  statuszap_uploads:

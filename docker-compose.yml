@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: statuszap-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-statuszap}
+      POSTGRES_USER: ${POSTGRES_USER:-statuszap}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-statuszap_dev_password}
+    ports:
+      - "5433:5432"
+    volumes:
+      - statuszap_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-statuszap} -d ${POSTGRES_DB:-statuszap}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - statuszap
+
+  backend:
+    build:
+      context: ./apps/backend
+    container_name: statuszap-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-statuszap}
+      DB_USER: ${POSTGRES_USER:-statuszap}
+      DB_PASS: ${POSTGRES_PASSWORD:-statuszap_dev_password}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      FRONT_URL: ${FRONT_URL:-http://localhost:4200}
+      API_URL: ${API_URL:-http://localhost:8080}
+      STORAGE_DIR: /app/uploads
+      STORAGE_URL: ${STORAGE_URL:-http://localhost:8080/uploads}
+    ports:
+      - "8080:8080"
+    volumes:
+      - statuszap_uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health/readiness"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      - statuszap
+
+  frontend:
+    build:
+      context: ./apps/frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8080/api}
+        VITE_APP_URL: ${VITE_APP_URL:-http://localhost:4200}
+    container_name: statuszap-web
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - statuszap
+
+networks:
+  statuszap:
+    driver: bridge
+
+volumes:
+  statuszap_postgres_data:
+  statuszap_uploads:

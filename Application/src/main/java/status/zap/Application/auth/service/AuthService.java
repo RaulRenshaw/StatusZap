@@ -99,6 +99,7 @@ public class AuthService {
                 user.getId(),
                 user.getEmail(),
                 user.getShopName(),
+                user.getAccountPlan().name().toLowerCase(),
                 List.of(user.getRole().name())
         );
 

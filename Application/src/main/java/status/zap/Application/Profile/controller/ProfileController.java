@@ -28,7 +28,7 @@ public class ProfileController {
     }
 
     /** PUT /api/profile */
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<ProfileResponseDTO> saveProfile(
             @AuthenticationPrincipal AuthenticatedUser user,
             @Valid @RequestBody ProfileRequestDTO dto) {

@@ -68,11 +68,15 @@ public class SseService {
     @Scheduled(fixedRate = 30_000)
     public void heartbeat() {
         emitters.forEach((token, list) ->
-            list.forEach(emitter -> {
-                try {
-                    emitter.send(SseEmitter.event().name("ping").data("keepalive"));
-                } catch (Exception ignored) {}
-            })
+                list.forEach(emitter -> {
+                    try {
+                        emitter.send(SseEmitter.event()
+                                .name("ping")
+                                .data("keepalive"));
+                    } catch (Exception e) {
+                        remove(token, emitter);
+                    }
+                })
         );
     }
 }

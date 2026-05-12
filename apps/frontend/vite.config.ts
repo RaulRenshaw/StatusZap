@@ -23,16 +23,6 @@ export default defineConfig({
       "@/hooks/use-auth": path.resolve(__dirname, "./src/modules/auth/hooks/use-auth"),
       "@/hooks/use-is-admin": path.resolve(__dirname, "./src/modules/auth/hooks/use-is-admin"),
       "@/hooks/use-store": path.resolve(__dirname, "./src/shared/hooks/use-store"),
-
-      // Page barrel aliases (App.tsx used ./pages/* without module path)
-      "@/pages/Dashboard": path.resolve(__dirname, "./src/modules/dashboard/pages/Dashboard"),
-      "@/pages/NewService": path.resolve(__dirname, "./src/modules/repairs/pages/NewServicePage"),
-      "@/pages/ServiceDetail": path.resolve(__dirname, "./src/modules/repairs/pages/ServiceDetailPage"),
-      "@/pages/ProfilePage": path.resolve(__dirname, "./src/modules/profile/pages/ProfilePage"),
-      "@/pages/PublicTracking": path.resolve(__dirname, "./src/modules/publicTracking/pages/PublicTrackingPage"),
-      "@/pages/Auth": path.resolve(__dirname, "./src/modules/auth/pages/Auth"),
-      "@/pages/Admin": path.resolve(__dirname, "./src/modules/admin/pages/AdminPage"),
-      "@/pages/NotFound": path.resolve(__dirname, "./src/shared/components/NotFound"),
     },
     dedupe: [
       "react",

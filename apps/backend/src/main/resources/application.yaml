@@ -43,7 +43,7 @@ jwt:
 
 cors:
   allowed-origins:
-    - ${FRONT_URL:http://localhost:4200}
+    - ${FRONT_URL:http://localhost:5173}
     - ${API_URL:http://localhost:8080}
 
 storage:

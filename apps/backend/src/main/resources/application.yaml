@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8080}
+  port: ${PORT}
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,application/javascript
@@ -11,13 +11,12 @@ spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
   datasource:
-    url: ${DATABASE_URL}
-    username: ${PGUSER}
-    password: ${PGPASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS:}
     driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
     show-sql: ${SHOW_SQL:false}
@@ -43,26 +42,26 @@ jwt:
 
 cors:
   allowed-origins:
-    - ${FRONT_URL:http://localhost:5173}
-    - ${API_URL:http://localhost:8080}
+    - ${FRONT_URL}
+    - ${API_URL}
 
 storage:
   local:
     base-dir: ${STORAGE_DIR:uploads}
-    base-url: ${STORAGE_URL:http://localhost:8080/uploads}
+    base-url: ${STORAGE_URL}
 
 mercado-pago:
-  enabled: ${MP_ENABLED:false}
-  sandbox: ${MP_SANDBOX:true}
+  enabled: ${MP_ENABLED}
+  sandbox: ${MP_SANDBOX}
   access-token: ${MP_ACCESS_TOKEN:}
-  public-key: ${MP_PUBLIC_KEY:}
+  public-key: ${MP_PUBLIC_KEY}
   webhook-secret: ${MP_WEBHOOK_SECRET:}
-  base-url: ${MP_BASE_URL:https://api.mercadopago.com}
+  base-url: ${MP_BASE_URL}
   plan-code: ${MP_PLAN_CODE:premium_monthly}
   plan-reason: ${MP_PLAN_REASON:Assinatura Premium Mensal}
-  amount: ${MP_AMOUNT:29.00}
+  amount: ${MP_AMOUNT}
   currency: ${MP_CURRENCY:BRL}
-  back-url: ${MP_BACK_URL:http://localhost:5173/billing/mercado-pago}
+  back-url: ${MP_BACK_URL}
   notification-url: ${MP_NOTIFICATION_URL:}
 
 management:

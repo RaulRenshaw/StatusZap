@@ -9,6 +9,10 @@ import { ServiceStatus, STATUS_FLOW, STATUS_LABELS } from "@/modules/orders/type
 import { PlusCircle, Search, Smartphone, Phone, ArrowRight, Inbox, Loader2 } from "lucide-react";
 import { cn } from "@/shared/utils/utils";
 import { timeAgo } from "@/shared/utils/format";
+import { UsageProgress } from "@/modules/plan/components/UsageProgress";
+import { useUsage } from "@/modules/plan/hooks/useUsage";
+import { usePlan } from "@/modules/subscription/hooks/usePlan";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/tooltip";
 
 const FILTERS: { key: "todos" | ServiceStatus; label: string }[] = [
   { key: "todos", label: "Todos" },
@@ -20,6 +24,10 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["key"]>("todos");
+
+  const { isFree } = usePlan();
+  const { isAtLimit } = useUsage();
+  const canCreate = !isFree || !isAtLimit;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -52,14 +60,36 @@ export default function Dashboard() {
               Cadastre um serviço em 30 segundos e mande o link pro cliente no WhatsApp.
             </p>
           </div>
-          <Button
-            size="lg"
-            onClick={() => navigate("/novo")}
-            className="h-12 gap-2 rounded-xl bg-background text-foreground shadow-lg hover:bg-background/90"
-          >
-            <PlusCircle className="h-5 w-5" />
-            Novo serviço
-          </Button>
+
+          {canCreate ? (
+            <Button
+              size="lg"
+              onClick={() => navigate("/novo")}
+              className="h-12 gap-2 rounded-xl bg-background text-foreground shadow-lg hover:bg-background/90"
+            >
+              <PlusCircle className="h-5 w-5" />
+              Novo serviço
+            </Button>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="lg"
+                  disabled
+                  className="h-12 gap-2 rounded-xl bg-background/50 text-foreground/50 shadow-lg cursor-not-allowed"
+                >
+                  <PlusCircle className="h-5 w-5" />
+                  Novo serviço
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">
+                  Limite de 20 ordens atingido.{" "}
+                  <span className="font-semibold">Faça upgrade para criar mais.</span>
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </div>
 
@@ -98,6 +128,9 @@ export default function Dashboard() {
           })}
         </div>
       </div>
+
+      {/* Barra de uso — aparece apenas para FREE quando >= 50% */}
+      <UsageProgress />
 
       {/* List */}
       {loading ? (

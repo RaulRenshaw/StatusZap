@@ -16,6 +16,10 @@ import status.zap.Application.order.model.ServiceOrder;
 import status.zap.Application.order.model.StatusEvent;
 import status.zap.Application.order.model.enums.OrderStatus;
 import status.zap.Application.order.repository.OrderRepository;
+import status.zap.Application.plan.feature.Feature;
+import status.zap.Application.plan.feature.FeatureAccessService;
+import status.zap.Application.plan.usage.UsageService;
+import status.zap.Application.plan.usage.UsageType;
 
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -31,6 +35,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final FeatureAccessService featureAccessService;
+    private final UsageService usageService;
     private final SecureRandom secureRandom = new SecureRandom();
 
     // ── List ─────────────────────────────────────────────────────────────────
@@ -52,6 +58,12 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDTO create(CreateOrderRequestDTO dto, UUID userId) {
+        // Verificação de limite de ordens ativas (plano FREE = 20)
+        // Usuários PREMIUM têm Feature.UNLIMITED_ORDERS e pulam o check
+        if (!featureAccessService.hasFeature(userId, Feature.UNLIMITED_ORDERS)) {
+            usageService.requireUnderLimit(userId, UsageType.ACTIVE_ORDERS);
+        }
+
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
@@ -140,15 +152,15 @@ public class OrderService {
 
     public OrderResponseDTO findByPublicToken(String publicToken) {
         return toResponse(
-            orderRepository.findByPublicToken(publicToken)
-                .orElseThrow(() -> new ResourceNotFoundException("Ordem não encontrada"))
+                orderRepository.findByPublicToken(publicToken)
+                        .orElseThrow(() -> new ResourceNotFoundException("Ordem não encontrada"))
         );
     }
 
     public OrderResponseDTO findByUserIdAndShortToken(UUID userId, String shortToken) {
         return toResponse(
-            orderRepository.findByUserIdAndPublicTokenStartingWith(userId, shortToken)
-                .orElseThrow(() -> new ResourceNotFoundException("Ordem não encontrada"))
+                orderRepository.findByUserIdAndPublicTokenStartingWith(userId, shortToken)
+                        .orElseThrow(() -> new ResourceNotFoundException("Ordem não encontrada"))
         );
     }
 

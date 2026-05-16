@@ -15,11 +15,10 @@ export const subscriptionService = {
       throw e;
     }),
 
-  checkout: (cardTokenId?: string) =>
-    request<SubscriptionCheckoutResponse>("/subscriptions/checkout", {
-      method: "POST",
-      body: JSON.stringify(cardTokenId ? { cardTokenId } : {}),
-    }),
+  checkout: () =>
+  request<SubscriptionCheckoutResponse>("/subscriptions/checkout", {
+    method: "POST",
+  }),
 
   cancel: () =>
     request<Subscription>("/subscriptions/cancel", { method: "POST" }),

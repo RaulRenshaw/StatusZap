@@ -13,7 +13,6 @@ public record SubscriptionResponseDTO(
         BigDecimal amount,
         String currency,
         String externalReference,
-        String mercadoPagoPlanId,
         String mercadoPagoSubscriptionId,
         String checkoutUrl,
         Instant currentPeriodStart,

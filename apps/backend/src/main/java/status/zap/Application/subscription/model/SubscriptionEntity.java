@@ -37,9 +37,6 @@ public class SubscriptionEntity {
     @Column(nullable = false)
     private String provider;
 
-    @Column(name = "mp_preapproval_plan_id")
-    private String mercadoPagoPlanId;
-
     @Column(name = "mp_preapproval_id", unique = true)
     private String mercadoPagoSubscriptionId;
 

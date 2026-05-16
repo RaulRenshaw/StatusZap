@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import status.zap.Application.order.model.ServiceOrder;
+import status.zap.Application.order.model.enums.OrderStatus;
 
 import java.time.Instant;
 import java.util.List;
@@ -54,6 +55,27 @@ public interface OrderRepository extends JpaRepository<ServiceOrder, UUID> {
     boolean existsByPublicToken(String publicToken);
 
     long countByUserId(UUID userId);
+
+    /**
+     * Conta ordens "ativas" do usuário (todas exceto ENTREGUE/CANCELADO).
+     * Usado pelo UsageService para verificar o limite do plano FREE.
+     */
+    @Query("""
+        SELECT COUNT(o) FROM ServiceOrder o
+        WHERE o.user.id = :userId
+          AND o.status NOT IN :finalStatuses
+    """)
+    long countActiveByUserId(
+            @Param("userId") UUID userId,
+            @Param("finalStatuses") List<OrderStatus> finalStatuses
+    );
+
+    /**
+     * Overload com statuses finais padrão — ENTREGUE e CANCELADO.
+     */
+    default long countActiveByUserId(UUID userId) {
+        return countActiveByUserId(userId, List.of(OrderStatus.ENTREGUE));
+    }
 
     @Query("SELECT COUNT(o) FROM ServiceOrder o WHERE o.createdAt > :since")
     long countCreatedAfter(@Param("since") Instant since);

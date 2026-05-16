@@ -16,7 +16,6 @@ import status.zap.Application.auth.repository.UserRepository;
 import status.zap.Application.commons.exception.ForbiddenException;
 import status.zap.Application.commons.exception.ResourceNotFoundException;
 import status.zap.Application.subscription.config.MercadoPagoProperties;
-import status.zap.Application.subscription.dto.CreateSubscriptionCheckoutRequestDTO;
 import status.zap.Application.subscription.dto.MercadoPagoWebhookNotificationDTO;
 import status.zap.Application.subscription.dto.SubscriptionCheckoutResponseDTO;
 import status.zap.Application.subscription.dto.SubscriptionConfigResponseDTO;
@@ -33,6 +32,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -76,7 +76,7 @@ public class SubscriptionService {
     }
 
     @Transactional
-    public SubscriptionCheckoutResponseDTO startCheckout(UUID userId, CreateSubscriptionCheckoutRequestDTO request) {
+    public SubscriptionCheckoutResponseDTO startCheckout(UUID userId) {
         ensureIntegrationEnabled();
 
         UserEntity user = userRepository.findById(userId)
@@ -86,12 +86,9 @@ public class SubscriptionService {
         if (current.isPresent() && REUSABLE_STATUSES.contains(current.get().getStatus())) {
             return toCheckoutResponse(current.get(), user.getAccountPlan());
         }
-
-        String planId = ensurePlanExists();
         String externalReference = buildExternalReference(user.getId());
 
         Map<String, Object> payload = new LinkedHashMap<>();
-        payload.put("preapproval_plan_id", planId);
         payload.put("payer_email", user.getEmail());
         payload.put("external_reference", externalReference);
         payload.put("back_url", properties.getBackUrl());
@@ -102,10 +99,6 @@ public class SubscriptionService {
                 "transaction_amount", properties.getAmount(),
                 "currency_id", properties.getCurrency()
         ));
-        if (StringUtils.hasText(request.cardTokenId())) {
-            payload.put("card_token_id", request.cardTokenId());
-            payload.put("status", "authorized");
-        }
         if (StringUtils.hasText(properties.getNotificationUrl())) {
             payload.put("notification_url", properties.getNotificationUrl());
         }
@@ -117,7 +110,6 @@ public class SubscriptionService {
                 .externalReference(externalReference)
                 .planCode(properties.getPlanCode())
                 .provider("mercado_pago")
-                .mercadoPagoPlanId(planId)
                 .mercadoPagoSubscriptionId(response.path("id").asText())
                 .status(mapSubscriptionStatus(response.path("status").asText()))
                 .amount(properties.getAmount())
@@ -265,9 +257,8 @@ public class SubscriptionService {
                     return subscriptionRepository.save(SubscriptionEntity.builder()
                             .user(user)
                             .externalReference(externalReference)
-                            .planCode(properties.getPlanCode())
+                            .planCode(null)
                             .provider("mercado_pago")
-                            .mercadoPagoPlanId(response.path("preapproval_plan_id").asText(null))
                             .mercadoPagoSubscriptionId(subscriptionId)
                             .status(SubscriptionStatus.UNKNOWN)
                             .amount(properties.getAmount())
@@ -292,7 +283,6 @@ public class SubscriptionService {
     }
 
     private void syncSubscriptionResponse(SubscriptionEntity subscription, JsonNode response) {
-        subscription.setMercadoPagoPlanId(response.path("preapproval_plan_id").asText(subscription.getMercadoPagoPlanId()));
         subscription.setMercadoPagoSubscriptionId(response.path("id").asText(subscription.getMercadoPagoSubscriptionId()));
         subscription.setStatus(mapSubscriptionStatus(response.path("status").asText()));
         subscription.setCheckoutUrl(response.path("init_point").asText(subscription.getCheckoutUrl()));
@@ -334,7 +324,6 @@ public class SubscriptionService {
                 subscription.getAmount(),
                 subscription.getCurrency(),
                 subscription.getExternalReference(),
-                subscription.getMercadoPagoPlanId(),
                 subscription.getMercadoPagoSubscriptionId(),
                 subscription.getCheckoutUrl(),
                 subscription.getCurrentPeriodStart(),
@@ -346,32 +335,6 @@ public class SubscriptionService {
                 subscription.getCreatedAt(),
                 subscription.getUpdatedAt()
         );
-    }
-
-    private String ensurePlanExists() {
-        return subscriptionRepository.findByStatusIn(REUSABLE_STATUSES).stream()
-                .map(SubscriptionEntity::getMercadoPagoPlanId)
-                .filter(StringUtils::hasText)
-                .findFirst()
-                .orElseGet(this::createPlan);
-    }
-
-    private String createPlan() {
-        Map<String, Object> payload = new LinkedHashMap<>();
-        payload.put("reason", properties.getPlanReason());
-        payload.put("back_url", properties.getBackUrl());
-        payload.put("auto_recurring", Map.of(
-                "frequency", 1,
-                "frequency_type", "months",
-                "transaction_amount", properties.getAmount(),
-                "currency_id", properties.getCurrency()
-        ));
-        if (StringUtils.hasText(properties.getNotificationUrl())) {
-            payload.put("notification_url", properties.getNotificationUrl());
-        }
-
-        JsonNode response = mercadoPagoClient.createPlan(payload);
-        return response.path("id").asText();
     }
 
     private String buildExternalReference(UUID userId) {
@@ -456,7 +419,7 @@ public class SubscriptionService {
         if (!StringUtils.hasText(value)) {
             return null;
         }
-        return Instant.parse(value.replace(" ", "T"));
+        return OffsetDateTime.parse(value).toInstant();
     }
 
     private Instant firstInstant(Instant... candidates) {

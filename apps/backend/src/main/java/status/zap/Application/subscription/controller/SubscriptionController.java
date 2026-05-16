@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import status.zap.Application.auth.dto.AuthenticatedUser;
-import status.zap.Application.subscription.dto.CreateSubscriptionCheckoutRequestDTO;
 import status.zap.Application.subscription.dto.SubscriptionCheckoutResponseDTO;
 import status.zap.Application.subscription.dto.SubscriptionConfigResponseDTO;
 import status.zap.Application.subscription.dto.SubscriptionResponseDTO;
@@ -31,15 +30,13 @@ public class SubscriptionController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<SubscriptionCheckoutResponseDTO> startCheckout(
-            @AuthenticationPrincipal AuthenticatedUser user,
-            @RequestBody(required = false) CreateSubscriptionCheckoutRequestDTO request) {
-        CreateSubscriptionCheckoutRequestDTO payload = request == null
-                ? new CreateSubscriptionCheckoutRequestDTO(null)
-                : request;
+    public ResponseEntity<SubscriptionCheckoutResponseDTO> checkout(
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(subscriptionService.startCheckout(user.id(), payload));
+        return ResponseEntity.ok(
+                subscriptionService.startCheckout(user.id())
+        );
     }
 
     @PostMapping("/cancel")

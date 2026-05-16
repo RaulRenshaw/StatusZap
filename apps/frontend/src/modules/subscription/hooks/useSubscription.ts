@@ -41,24 +41,31 @@ export function useSubscription() {
     }, 2000);
     return () => clearInterval(id);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+  
   const subscribe = useCallback(async () => {
     setActionLoading(true);
     setError(null);
+
     try {
+
       const res = await subscriptionService.checkout();
+
       if (res.checkoutUrl) {
-        // Append return marker so we poll on return
-        const returnUrl = `${window.location.origin}/?subscriptionReturn=1`;
         window.location.href = res.checkoutUrl;
-        void returnUrl; // used by the backend as return_url
-      } else {
-        await refresh(true);
+        return;
       }
+
+      await refresh(true);
+
     } catch (e) {
+
       setError(getErrorMessage(e));
+
+    } finally {
+
       setActionLoading(false);
     }
+
   }, [refresh]);
 
   const cancelSubscription = useCallback(async () => {

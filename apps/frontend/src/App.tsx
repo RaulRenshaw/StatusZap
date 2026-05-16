@@ -8,7 +8,11 @@ import { AuthProvider } from "@/modules/auth/hooks/use-auth";
 import { ProtectedRoute } from "@/shared/components/ProtectedRoute";
 import { lazy, Suspense } from "react";
 import { Loader2 } from "lucide-react";
+// 1. IMPORTAR DO PACOTE PADRÃO (SEM O "/next")
+import { inject } from "@vercel/analytics";
 
+// 2. INICIALIZAR O ANALYTICS AQUI (Fora do componente)
+inject();
 // ── Lazy-loaded pages ─────────────────────────────────────────────────────────
 const Dashboard        = lazy(() => import("@/modules/dashboard/pages/Dashboard"));
 const NewService       = lazy(() => import("@/modules/orders/pages/NewServicePage"));

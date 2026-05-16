@@ -1,5 +1,5 @@
 server:
-  port: ${PORT}
+  port: ${PORT:8080}
   compression:
     enabled: true
     mime-types: application/json,application/xml,text/html,text/xml,text/plain,text/css,application/javascript
@@ -48,18 +48,18 @@ cors:
 storage:
   local:
     base-dir: ${STORAGE_DIR:uploads}
-    base-url: ${STORAGE_URL}
+    base-url: ${STORAGE_URL:http://localhost:8080/uploads}
 
 mercado-pago:
-  enabled: ${MP_ENABLED}
-  sandbox: ${MP_SANDBOX}
+  enabled: ${MP_ENABLED:true}
+  sandbox: ${MP_SANDBOX:false}
   access-token: ${MP_ACCESS_TOKEN:}
   public-key: ${MP_PUBLIC_KEY}
   webhook-secret: ${MP_WEBHOOK_SECRET:}
   base-url: ${MP_BASE_URL}
   plan-code: ${MP_PLAN_CODE:premium_monthly}
   plan-reason: ${MP_PLAN_REASON:Assinatura Premium Mensal}
-  amount: ${MP_AMOUNT}
+  amount: ${MP_AMOUNT:29}
   currency: ${MP_CURRENCY:BRL}
   back-url: ${MP_BACK_URL}
   notification-url: ${MP_NOTIFICATION_URL:}

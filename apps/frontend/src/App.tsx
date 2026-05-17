@@ -23,6 +23,7 @@ const Auth             = lazy(() => import("@/modules/auth/pages/Auth"));
 const Admin            = lazy(() => import("@/modules/admin/pages/AdminPage"));
 const SubscriptionPage = lazy(() => import("@/modules/subscription/pages/SubscriptionPage"));
 const NotFound         = lazy(() => import("@/shared/components/NotFound"));
+const Landing          = lazy(() => import("@/modules/landinPage/statuszap"));
 
 const queryClient = new QueryClient();
 
@@ -43,16 +44,17 @@ const App = () => (
         <AuthProvider>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              {/* ── Público ─────────────────────────────────────────── */}
-              <Route path="/r/:slug/:label/:token" element={<PublicTracking />} />
-              <Route path="/r/:slug/:token"        element={<PublicTracking />} />
-              <Route path="/r/:token"              element={<PublicTracking />} />
-              <Route path="/:slug/:short"          element={<PublicTracking />} />
-
-              {/* ── Auth ────────────────────────────────────────────── */}
+              {/* públicas */}
+              <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
 
-              {/* ── Protegido ───────────────────────────────────────── */}
+              {/* tracking */}
+              <Route path="/r/:slug/:label/:token" element={<PublicTracking />} />
+              <Route path="/r/:slug/:token" element={<PublicTracking />} />
+              <Route path="/r/:token" element={<PublicTracking />} />
+              <Route path="/track/:slug/:short" element={<PublicTracking />} />
+
+              {/* protegidas */}
               <Route
                 element={
                   <ProtectedRoute>
@@ -60,12 +62,12 @@ const App = () => (
                   </ProtectedRoute>
                 }
               >
-                <Route path="/"         element={<Dashboard />} />
-                <Route path="/novo"     element={<NewService />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/novo" element={<NewService />} />
                 <Route path="/servico/:id" element={<ServiceDetail />} />
-                <Route path="/perfil"   element={<ProfilePage />} />
-                <Route path="/assinar"  element={<SubscriptionPage />} />
-                <Route path="/admin"    element={<Admin />} />
+                <Route path="/perfil" element={<ProfilePage />} />
+                <Route path="/assinar" element={<SubscriptionPage />} />
+                <Route path="/admin" element={<Admin />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

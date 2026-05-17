@@ -63,15 +63,17 @@ export default function Auth() {
     }
   }
 
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-soft px-4 py-8">
-      <div className="w-full max-w-md space-y-6">
-        <div className="flex justify-center">
-          <Logo size="lg" />
-        </div>
+return (
+  <div className="flex min-h-screen items-center justify-center bg-gradient-soft px-4 py-8">
+    <div className="w-full max-w-md space-y-4"> {/* Reduzido space-y de 6 para 4 */}
+      
+      {/* Container da Logo ajustado e mais próximo do formulário */}
+      <div className="flex justify-center -mt-8 mb-2">
+        <Logo size="sm" showName={true} />
+      </div>
 
-        <Card className="rounded-2xl border-border p-6 shadow-elevated">
-          <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
+      <Card className="rounded-2xl border-border p-6 shadow-elevated">
+        <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
             <TabsList className="grid w-full grid-cols-2 rounded-xl">
               <TabsTrigger value="login" className="rounded-lg">Entrar</TabsTrigger>
               <TabsTrigger value="signup" className="rounded-lg">Criar conta</TabsTrigger>

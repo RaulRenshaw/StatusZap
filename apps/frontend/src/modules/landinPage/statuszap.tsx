@@ -144,7 +144,7 @@ export default function LandingPage() {
             >
               <span className="absolute inset-[-1000%] animate-[spin_6s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#25d366_0%,#8bffb6_25%,#25d366_50%,#0f2016_75%,#25d366_100%)]" />
 
-              <span className="relative inline-flex items-center gap-2 rounded-[11px] bg-[#0d1b12] px-5 py-2.5 font-semibold text-white backdrop-blur-xl transition group-hover:bg-[#112116]">
+              <span className="relative inline-flex items-center gap-2 rounded-[11px] bg-[#138737] px-5 py-2.5 font-semibold text-white backdrop-blur-xl transition group-hover:bg-[#21D158]">
                 Comece grátis
                 <ArrowRight className="h-4 w-4" />
               </span>
